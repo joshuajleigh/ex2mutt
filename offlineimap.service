@@ -1,0 +1,6 @@
+[Unit]
+Description=run offlineimap sync
+
+[Service]
+User=jleigh
+ExecStart=/usr/bin/offlineimap
