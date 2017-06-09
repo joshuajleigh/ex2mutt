@@ -13,7 +13,7 @@ Install the following packages
   - [python](https://www.python.org/)
     - install icalendar
 
-type `make ithappen`
+type `bash templatizer`
 
 Now you should have the following
   - davmail autostarting
@@ -26,3 +26,6 @@ Now you should have the following
     - viewing of attached images via feh
     - querying of LDAP server for users/emails
     - general xdg-open for other files
+
+TODO:
+  - write a bash script to prompt for info
