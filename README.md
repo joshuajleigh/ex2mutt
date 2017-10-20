@@ -1,7 +1,9 @@
 # ex2mutt
-Make mutt work with exchange, with style
+To make mutt work with exchange, you have a lot of hoops to jump:
+I put them in docker to spare you much bother
 
-Install the following packages
+
+The container has the following packages
   - [davmail](http://davmail.sourceforge.net/)
   - [offlineimap](http://www.offlineimap.org/)
   - [msmtp](http://msmtp.sourceforge.net/)
@@ -12,20 +14,20 @@ Install the following packages
     - install Net::LDAP perl module `cpan Net::LDAP`
   - [python](https://www.python.org/)
     - install icalendar
-
-type `bash templatizer`
-
-Now you should have the following
-  - davmail autostarting
-  - offline imap auto syncing
-  - mutt being all stylish with
+additionally it
+  - autostarts davmail
+  - autostarts offlineimap
+  - sets up mutt with
     - vim style keymappings
     - incoming and outgoing emails
     - viewable calendar invites
     - auto rendered html content via lynx
     - viewing of attached images via feh
     - querying of LDAP server for users/emails
-    - general xdg-open for other files
+    - general xdg-open for other files (mileage will very)
 
 TODO:
-  - write a bash script to prompt for info
+  - feh
+  - lynx
+  - calendar invite viewing
+  - sand out rough edges

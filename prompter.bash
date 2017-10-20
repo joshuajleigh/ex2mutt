@@ -13,8 +13,6 @@ questions() {
   read ADPASSWORD
   echo "What is the name of the base DN where the users are kept? (you may need to ask your friendly Admin)"
   read ADBASEDN
-  echo "What directory should your mail be kept? ~/Maildir/work isn't terrible"
-  read MAILDIR
   echo "What name do you want to give the mail account?"
   read ACCOUNTNAME
   echo "What is the web endpoint of the exchange server? ex owa.domain.com/ews/exchange.asmx"
@@ -30,7 +28,6 @@ answers () {
   echo "AD User=$ADUSER"
   echo "AD Password=$ADPASSWORD"
   echo "Base org DN=$ADBASEDN"
-  echo "Mail Directory=$MAILDIR"
   echo "Account Name=$ACCOUNTNAME"
   echo "Exchange Endpoint=$OWAADDRESS"
   echo "echo does this look correct?"
@@ -44,7 +41,6 @@ ADTLD="$ADTLD"
 ADUSER="$ADUSER"
 ADPASSWORD="$ADPASSWORD"
 ADBASEDN="$ADBASEDN"
-MAILDIR="$MAILDIR"
 ACCOUNTNAME="$ACCOUNTNAME"
 OWAADDRESS="$OWAADDRESS"
 SOMETHINGUNLIKELY

@@ -1,8 +1,0 @@
-# to display html content inline
-text/html; lynx -assume_charset=%{charset} -display_charset=utf-8 -dump %s; nametemplate=%s.html; copiousoutput
-# to disply exchange invatation inline
-text/calendar; python ~/.config/mutt/mutt_ics.py; copiousoutput
-#display pictures (usually through attachments)
-image/*; feh %s
-#an attempt at catch all for application in mail
-application/*; ~/.config/mutt/mutt-open.bash '%s'; test=test -n ":0"

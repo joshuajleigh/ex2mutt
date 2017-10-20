@@ -1,11 +1,11 @@
-#!/usr/bin/env/bash
+#!/usr/bin/env bash
 
 eval $(cat master.conf | sed 's/^/export /')
 
 ################## davmail section #######################
 
 #creating the davmail conf file
-cat << SOMETHINGUNLIKELY > ~/.davmail.properties
+cat << SOMETHINGUNLIKELY > configs/davmail.properties
 #DavMail settings
 davmail.allowRemote=false
 davmail.bindAddress=
@@ -65,35 +65,21 @@ log4j.rootLogger=WARN
 
 SOMETHINGUNLIKELY
 
-#creating service to start davmail at boot
-sudo cat << SOMETHINGUNLIKELY > /usr/lib/systemd/system/davmail.service
-[Unit]
-Description=run offlineimap sync
-
-[Service]
-User=$ADUSER
-Environment=CONFIG_FILE_PATH=/home/$ADUSER/.davmail.properties
-ExecStart=/usr/bin/davmail
-SOMETHINGUNLIKELY
-
-#enabling and starting davmail service
-sudo systemctl enable davmail.service
-sudo systemctl start davmail.service
-
-################## offlineimap section #####################
-
 #creating the offlineimap conf file
-cat << SOMETHINGUNLIKELY > ~/.offlineimaprc
+cat << SOMETHINGUNLIKELY > configs/offlineimaprc
 [general]
 accounts = $ACCOUNTNAME
+maxsyncaccounts = 1
 
 [Account $ACCOUNTNAME]
 localrepository = Work-Local
 remoterepository = Work-Remote
+autorefresh = 0.5
+quick = 10
 
 [Repository Work-Local]
 type = Maildir
-localfolders = $MAILDIR
+localfolders = /root/Maildir/$ACCOUNTNAME
 
 [Repository Work-Remote]
 type = IMAP
@@ -105,7 +91,7 @@ maxconnections = 3
 remoteuser = $ADUSER@$ADDOMAIN.$ADTLD
 remotepass = $ADPASSWORD
 holdconnectionopen = true
-keepalive = 120
+keepalive = 60
 realdelete = yes
 
 # Folders to skip during sync. (You can set up which ones your self, this is just an example)
@@ -113,42 +99,27 @@ realdelete = yes
 
 SOMETHINGUNLIKELY
 
-#creating offlineimap sync systemd service
-sudo cat << SOMETHINGUNLIKELY > /usr/lib/systemd/system/offlineimap.service
-[Unit]
-Description=run offlineimap sync
-
-[Service]
-User=$ADUSER
-ExecStart=/usr/bin/offlineimap
-SOMETHINGUNLIKELY
-
-#copying the offlineimap timer file
-sudo cp offlineimap/offlineimap.timer /usr/lib/systemd/system/offlineimap.timer
-#enabling the timer to run (not starting until end of script)
-sudo systemctl enable offlineimap.timer
-
 ################## mutt section #########################
 
 #creating the mutt config file
-cat << SOMETHINGUNLIKELY > ~/.muttrc
+cat << SOMETHINGUNLIKELY > configs/muttrc
 
-set spoolfile=~/$MAILDIR/INBOX
+# $ACCOUNTNAME account
+source ~/.mutt/$ACCOUNTNAME
 
 # needed for maildir format
 set mbox_type=Maildir
-set folder=$MAILDIR
 set sendmail="/usr/bin/msmtp"
 my_hdr From: "$ADUSER@$ADDOMAIN.$ADTLD"
 
 # setting theme
-source ~/.mutt/themes/comidia
+source /root/.mutt/comidia
 
 # set mailcap file for handling different filetypes
 # text vs html vs image, etc
-set mailcap_path        = ~/.mutt/mailcap                # enabling html read
+set mailcap_path        = /root/mutt/mailcap                # enabling html read
 # set LDAP query command
-set query_command="~/.mutt/mutt-ldap.pl '%s'"
+set query_command="/root/.mutt/mutt-ldap.pl '%s'"
 # view some some items inline
 auto_view text/html                                      # view html automatically
 auto_view text/calendar                                  # view ics files via mutt_ics python application
@@ -187,8 +158,20 @@ unset markers
 
 SOMETHINGUNLIKELY
 
+#creating the mutt account file
+
+cat << SOMETHINGUNLIKELY > mutt/$ACCOUNTNAME
+
+set spoolfile=~/Maildir/$ACCOUNTNAME/INBOX
+set folder=~/Maildir/$ACCOUNTNAME
+set sendmail="/usr/bin/msmtp"
+set postponed = "~/Maildir/$ACCOUNTNAME/Drafts"
+my_hdr From: "$ADUSER@$ADDOMAIN.$ADTLD"
+
+SOMETHINGUNLIKELY
+
 #creating the mutt LDAP querying script
-cat << SOMETHINGUNLIKELY > ~/.mutt/mutt-ldap.pl
+cat << SOMETHINGUNLIKELY > mutt/mutt-ldap.pl
 #! /usr/bin/perl -Tw
 
 # 2005-02-24: Fixed for AD/Exchange 2003 & Unicode characters,
@@ -249,25 +232,25 @@ foreach my \$entry (\$mesg->all_entries) {
 
 SOMETHINGUNLIKELY
 
-#copying the mutt theme file
-cp mutt/comida ~/.mutt/comida
-#copying the mutt mailcap file (tells mutt how to open files)
-cp mutt/mailcap ~/.mutt/mailcap
-#copying the mutt xdg-open script
-cp mutt/mutt-open.bash ~/.mutt/mutt-open
+##copying the mutt theme file
+#cp mutt/comida ~/.mutt/comida
+##copying the mutt mailcap file (tells mutt how to open files)
+#cp mutt/mailcap ~/.mutt/mailcap
+##copying the mutt xdg-open script
+#cp mutt/mutt-open.bash ~/.mutt/mutt-open
 
 ############### msmtp section ###################
 
 #creating the msmtp conf file
-cat << SOMETHINGUNLIKELY > ~/.msmtprc
+cat << SOMETHINGUNLIKELY > configs/msmtprc
 # Set default values for all following accounts.
 defaults
 auth              on
 tls               off
 logfile           ~/.msmtp.log
 
-# LFO
-account           LFO
+# $ACCOUNTNAME
+account           $ACCOUNTNAME
 host              localhost
 port              1025
 protocol          smtp
@@ -276,10 +259,6 @@ auth              login
 user              $ADDOMAIN\\$ADUSER
 password          $ADPASSWORD
 
-account default : LFO
+account default : $ACCOUNTNAME
 
 SOMETHINGUNLIKELY
-
-#first offlineimap sync should be run in one thread mode as below
-offlineimap -d 1
-sudo systemctl start offlineimap.timer
