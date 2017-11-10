@@ -1,4 +1,3 @@
 *.swp
 master.conf*
 Maildir/*
-configs/*
