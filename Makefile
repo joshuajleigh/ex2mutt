@@ -44,7 +44,20 @@ mutt: check_for_stopped ## start using mutt
 		-v /etc/shadow:/etc/shadow:ro \
 		-v /tmp/.X11-unix:/tmp/.X11-unix:rw \
 		-v $(PWD)/Maildir:/home/$(USERNAME)/Maildir \
-		-it ex2mutt /bin/sh
+		-it joshuajleigh/ex2mutt ./wrapper.sh
+
+testing: check_for_stopped ## starts in shell for testing, etc
+	-@docker run \
+		--name="ex2mutt" \
+		--env="DISPLAY" \
+		-e ENDUSER=$(USERNAME) \
+		-v /etc/localtime:/etc/localtime \
+		-v /etc/group:/etc/group:ro \
+		-v /etc/passwd:/etc/passwd:ro \
+		-v /etc/shadow:/etc/shadow:ro \
+		-v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+		-v $(PWD)/Maildir:/home/$(USERNAME)/Maildir \
+		-it joshuajleigh/ex2mutt /bin/sh
 
 image: ## build / rebuild the docker container
 	docker build . -t exchange2mutt
