@@ -7,11 +7,8 @@ The container has the following packages
   - [davmail](http://davmail.sourceforge.net/)
   - [offlineimap](http://www.offlineimap.org/)
   - [msmtp](http://msmtp.sourceforge.net/)
-  - [xdg-open](https://linux.die.net/man/1/xdg-open)
   - [lynx](http://lynx.browser.org/)
   - [feh](https://feh.finalrewind.org/)
-  - [perl](https://www.perl.org/)
-    - install Net::LDAP perl module `cpan Net::LDAP`
   - [python](https://www.python.org/)
     - install icalendar
 additionally it
@@ -27,7 +24,4 @@ additionally it
     - general xdg-open for other files (mileage will very)
 
 TODO:
-  - feh
-  - lynx
-  - calendar invite viewing
-  - sand out rough edges
+  - sand out rough edges (PW visible at first prompt)
