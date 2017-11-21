@@ -478,6 +478,7 @@ if [ ! -e /home/$ENDUSER/.mutt ]; then
   eval $(cat /home/$ENDUSER/master.conf | sed 's/^/export /')
   make_templates
   chown -R $ENDUSER:$ENDUSER /home/$ENDUSER
+  chmod 600 /home/$ENDUSER/.msmtprc
 fi
 # Start the first process
 su -c "/usr/local/davmail/davmail.sh &" -s /bin/sh $ENDUSER

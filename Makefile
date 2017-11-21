@@ -46,9 +46,9 @@ mutt: check_for_stopped ## start using mutt
 		-v $(PWD)/Maildir:/home/$(USERNAME)/Maildir \
 		-it joshuajleigh/ex2mutt ./wrapper.sh
 
-testing: check_for_stopped ## starts in shell for testing, etc
+testing: ## starts in shell for testing, etc
 	-@docker run \
-		--name="ex2mutt" \
+		--name="ex2mutt-testing" \
 		--env="DISPLAY" \
 		-e ENDUSER=$(USERNAME) \
 		-v /etc/localtime:/etc/localtime \
