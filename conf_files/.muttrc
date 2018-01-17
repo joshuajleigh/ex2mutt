@@ -1,0 +1,49 @@
+# account settings
+source ~/.mutt/account.mutt
+
+# needed for maildir format
+set mbox_type=Maildir
+set sendmail="/usr/bin/msmtp"
+my_hdr From: "--ADUSER--"
+
+# setting theme
+source ~/.mutt/comida
+
+# set mailcap file for handling different filetypes
+# text vs html vs image, etc
+set mailcap_path        = ~/.mutt/mailcap                     # enabling html read
+set query_command="/bin/sh ~/.mutt/ldapsearch.sh '%s'"      # ldapsearch script
+# view some some items inline
+auto_view text/html                                       # view html automatically
+auto_view text/calendar                                   # view ics files via mutt_ics python application
+
+# configuration for display format
+set index_format="%3C %Z %[!%H:%M %m.%d] %-17.17F (%5c) %s"
+
+# Generally making mutt more vimlike
+# vim style keymappings
+bind index j next-entry
+bind index k previous-entry
+bind index J next-thread
+bind index K previous-thread
+
+bind index / search
+#bind index ? search-reverse
+bind index n search-next
+bind index N search-opposite
+
+bind index gg first-entry
+bind index G last-entry
+
+bind index r reply
+bind index R group-reply
+
+# Pager
+# vim style keymappings
+bind pager j next-line
+bind pager k previous-line
+bind pager / search
+bind pager ? search-reverse
+bind pager n search-next
+bind pager N search-opposite
+unset markers

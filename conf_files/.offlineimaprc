@@ -1,0 +1,29 @@
+[general]
+accounts = ex2mutt
+maxsyncaccounts = 1
+
+[Account ex2mutt]
+localrepository = Work-Local
+remoterepository = Work-Remote
+autorefresh = 0.5
+quick = 10
+
+[Repository Work-Local]
+type = Maildir
+localfolders = ~/Maildir/ex2mutt/
+
+[Repository Work-Remote]
+type = IMAP
+SSL = no
+remotehost = localhost
+remoteport = 1143
+#cert_fingerprint =
+maxconnections = 3
+remoteuser = --ADUSER--
+remotepass = --ADPASSWORD--
+holdconnectionopen = true
+keepalive = 60
+realdelete = yes
+
+# Folders to skip during sync. (You can set up which ones your self, this is just an example)
+#folderfilter = lambda folder: folder in ['INBOX', 'Sent']

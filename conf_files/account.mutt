@@ -1,0 +1,5 @@
+set folder=~/Maildir/ex2mutt/
+set spoolfile=~/Maildir/ex2mutt/INBOX
+set postponed = "~/Maildir/ex2mutt/Drafts"
+set sendmail="/usr/bin/msmtp"
+my_hdr From: "--ADUSER--"
