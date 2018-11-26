@@ -9,6 +9,8 @@ my_hdr From: "--ADUSER--"
 # setting theme
 source ~/.mutt/comida
 
+set editor='vim'    #setting vim as the default editor
+
 # set mailcap file for handling different filetypes
 # text vs html vs image, etc
 set mailcap_path        = ~/.mutt/mailcap                     # enabling html read
@@ -29,6 +31,7 @@ bind index K previous-thread
 
 bind index / search
 #bind index ? search-reverse
+bind index U toggle-new
 bind index n search-next
 bind index N search-opposite
 

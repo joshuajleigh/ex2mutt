@@ -17,9 +17,18 @@ set_env () {
       fi
     done
 	! (: "${OWAADDRESS?}") 2>/dev/null &&\
-    echo "What is the web endpoint of the exchange server? ex owa.domain.com/ews/exchange.asmx" &&\
-    read OWAADDRESS
-  ADUSERSHORT=$(echo $ADUSER | sed "s/\(.*\)\(@.*\)/\1/g")
+    echo "Is this for office 365?"
+    read O365
+    case $O365 in
+      [Nn]*)
+        echo "What is the web endpoint of the exchange server? ex owa.domain.com/ews/exchange.asmx" &&\
+        read OWAADDRESS
+        ADUSERSHORT=$(echo $ADUSER | sed "s/\(.*\)\(@.*\)/\1/g") ;;
+      [Yy]*)
+        OWAADDRESS="outlook.com/owa/"
+        sed -e "s/--ADFLATDOMAIN--.//g" -i /home/user/.msmtprc
+        ADUSERSHORT=$(echo $ADUSER) ;;
+      esac
   ADDOMAIN=$(echo $ADUSER | sed "s/\(^.*@\)\(.*\)/\2/g")
   ADFLATDOMAIN=$(echo $ADDOMAIN | sed "s/\(^.*\)\(\..*\)/\1/g")
   ADTLD=$(echo $ADDOMAIN | sed "s/\(^.*\.\)\(.*\)/\2/g")
@@ -44,7 +53,7 @@ verify_answers () {
     [Yy]*)
       ;;
     [Nn]*)
-      questions
+      set_env
   esac
 }
 
@@ -57,7 +66,7 @@ autodetect() {
   else
     ADSERVER="${DC_LOOKUP[0]}"
   fi
-  USER_LOOKUP=$(ldapsearch -x -h "$1" -D "$ADUSER" -w "$ADPASSWORD" -b "dc=$ADFLATDOMAIN,dc=$ADTLD" -s sub "(cn=*$FULLNAME*)" cn mail | grep "dn:")
+#  USER_LOOKUP=$(ldapsearch -x -h "$1" -D "$ADUSER" -w "$ADPASSWORD" -b "dc=$ADFLATDOMAIN,dc=$ADTLD" -s sub "(cn=*$FULLNAME*)" cn mail | grep "dn:")
 #  echo "$USER_LOOKUP"
 #  DC_LIST=($(dig -t SRV _ldap._tcp.$1 +nocookie +short | awk '{print $NF}'))
 #  echo ${DC_LIST[@]}
@@ -96,6 +105,7 @@ run_stuff() {
   verify_answers
   adduser user -D -u $USERID
   chown -R user /home/user
+  chmod 600 /home/user/.msmtprc
 	rewrite_config
 #	# Start the first process
 	su -c "/usr/local/davmail/davmail.sh &" -s /bin/sh user
